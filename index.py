@@ -6,7 +6,7 @@ import plotly.express as px  # interactive charts
 import streamlit as st  # 🎈 data web app development
 
 st.set_page_config(
-    page_title="Real-Time Data Science Dashboard",
+    page_title="충청남도 어린이집, 유치원 현황",
     page_icon="✅",
     layout="wide",
 )
@@ -22,7 +22,7 @@ def get_data() -> pd.DataFrame:
 df = get_data()
 
 # dashboard title
-st.title("Real-Time / Live Data Science Dashboard")
+st.title("충청남도 어린이집, 유치원 현황")
 
 # top-level filters
 job_filter = st.selectbox("Select the Job", pd.unique(df["job"]))
