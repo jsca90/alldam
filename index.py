@@ -1,9 +1,10 @@
 import time  
-
 import numpy as np 
 import pandas as pd 
 import plotly.express as px  
 import streamlit as st 
+import matplotlib.pyplot as plt
+
 
 st.set_page_config(
     page_title="충청남도 어린이집, 유치원 현황",
@@ -12,82 +13,95 @@ st.set_page_config(
 )
 
 # read csv from a github repo
-# dataset_url = "https://raw.githubusercontent.com/Lexie88rus/bank-marketing-analysis/master/bank.csv"
-dataset_path = '2016_2020_data.csv'
+dataset_path = 'birth_2016_2021.csv'
 
 # read csv from a URL
 @st.experimental_memo
 def get_data() -> pd.DataFrame:
-    return pd.read_csv(dataset_path, encoding='cp949')
+    return pd.read_csv(dataset_path)
 
 df = get_data()
 
 # dashboard title
 st.title("충청남도 어린이집, 유치원 현황")
 
-# top-level filters
-job_filter = st.selectbox("Select the Job", pd.unique(df["시군별"]))
+
+
 
 # # creating a single-element container
 placeholder = st.empty()
 
 # # dataframe filter
-df = df[df["시군별"] == job_filter]
 
-# near real-time / live feed simulation
-# for seconds in range(200):
 
-    # df["age_new"] = df["age"] * np.random.choice(range(1, 5))
-    # df["balance_new"] = df["balance"] * np.random.choice(range(1, 5))
 
-    # # creating KPIs
-    # avg_age = np.mean(df["age_new"])
+# creating KPIs
+avg_age = np.mean(df["출생아수"])
 
-    # count_married = int(
-    #     df[(df["marital"] == "married")]["marital"].count()
-    #     + np.random.choice(range(1, 30))
-    # )
 
-    # balance = np.mean(df["balance_new"])
+with placeholder.container():
 
-    # with placeholder.container():
+ 
 
-    #     # create three columns
-    #     kpi1, kpi2, kpi3 = st.columns(3)
+    col1, col2, col3 = st.columns(3)
 
-    #     # fill in those three columns with respective metrics or KPIs
-    #     kpi1.metric(
-    #         label="Age ⏳",
-    #         value=round(avg_age),
-    #         delta=round(avg_age) - 10,
-    #     )
+    with col1:
+       city_filter = st.selectbox("시군구", pd.unique(df["시군별"]))
+       ls = df[df["시군별"] == city_filter]
+
+    with col2:
+       cty_filter = st.selectbox("시군구", pd.unique(df["연도"]))
+       df = df[df["연도"] == cty_filter]
+
+    with col3:
+       ciy_filter = st.selectbox("시군구", pd.unique(df["출생아수"]))
+       df = df[df["출생아수"] == ciy_filter]
+
+    
+    
+
+
+
+    # create three columns
+    kpi1, kpi2, kpi3 = st.columns(3)
+
+    # fill in those three columns with respective metrics or KPIs
+    kpi1.metric(
+        label=f"평균 {city_filter} 출생아 수",
+        value=round(avg_age),
+        delta=round(avg_age) - 10,)
+
+    kpi2.metric(
+        label=f"평균 {city_filter} 출생아 수",
+        value=round(avg_age),
+        delta=round(avg_age) - 10,)
+
+    kpi3.metric(
+        label=f"평균 {city_filter} 출생아 수",
+        value=round(avg_age),
+        delta=round(avg_age) - 10,)
+
+
+    fig_col1, fig_col2, fig_col3 = st.columns(3)
+
+    with fig_col1:
+        st.markdown("2016~2021 출생아수 현황")
+        plt.figure(figsize=(10,5))
+        fig = px.bar(data_frame=ls, y='출생아수', x="연도")
+        st.write(fig)
         
-    #     kpi2.metric(
-    #         label="Married Count 💍",
-    #         value=int(count_married),
-    #         delta=-10 + count_married,
-    #     )
+    with fig_col2:
+        st.markdown("### 2 Chart")
+        plt.figure(figsize=(10,5))
+        fig = px.bar(data_frame=df, y='출생아수', x="연도")
+        st.write(fig)
+
+    with fig_col3:
+        st.markdown("### 3 Chart")
+        plt.figure(figsize=(10,5))
+        fig = px.bar(data_frame=df, y='출생아수', x="연도")
+        st.write(fig)
         
-    #     kpi3.metric(
-    #         label="A/C Balance ＄",
-    #         value=f"$ {round(balance,2)} ",
-    #         delta=-round(balance / count_married) * 100,
-    #     )
 
-    #     # create two columns for charts
-    #     fig_col1, fig_col2 = st.columns(2)
-    #     with fig_col1:
-    #         st.markdown("### First Chart")
-    #         fig = px.density_heatmap(
-    #             data_frame=df, y="age_new", x="marital"
-    #         )
-    #         st.write(fig)
-            
-    #     with fig_col2:
-    #         st.markdown("### Second Chart")
-    #         fig2 = px.histogram(data_frame=df, x="age_new")
-    #         st.write(fig2)
 
-    #     st.markdown("### Detailed Data View")
-    #     st.dataframe(df)
-    #     time.sleep(1)
+    
