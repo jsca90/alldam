@@ -13,7 +13,7 @@ st.set_page_config(
 
 # read csv from a github repo
 # dataset_url = "https://raw.githubusercontent.com/Lexie88rus/bank-marketing-analysis/master/bank.csv"
-dataset_path = './data/2016_2020_data.csv'
+dataset_path = '2016_2020_data.csv'
 
 # read csv from a URL
 @st.experimental_memo
